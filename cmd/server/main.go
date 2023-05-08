@@ -1,11 +1,16 @@
 package main
 
 import (
-	"os"
-	"fmt"
+	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
+	"github.com/luisnquin/blind-creator-rest-api-test/internal/server"
 )
 
-
 func main() {
-	fmt.Fprintln(os.Stdout, "working")
+	appConfig := config.NewApp("")
+
+	server := server.New(appConfig)
+
+	if err := server.Start(); err != nil {
+		panic(err)
+	}
 }
