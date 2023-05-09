@@ -48,9 +48,5 @@ func (s Server) Start() error {
 		router.Handle(endpoint.method, endpoint.path, httprouter.Handle(handler))
 	}
 
-	if s.config.Server.Port[0] != ':' {
-		s.config.Server.Port = ":" + s.config.Server.Port
-	}
-
-	return http.ListenAndServe(s.config.Server.Port, router)
+	return http.ListenAndServe(s.config.Server.Port(), router)
 }
