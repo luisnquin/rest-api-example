@@ -19,4 +19,4 @@ migrate: erase-db-data compose-up
 erase-db-data:
 	docker kill $(docker ps -qa) 2> /dev/null || true
 	docker rm -f $(docker ps -qa) 2> /dev/null || true
-	if test -d "./_data"; then sudo rm -rf ./_data/; fi 
+	if test -d "./_data"; then sudo rm -rf ./_data/; fi
