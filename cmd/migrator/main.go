@@ -12,7 +12,7 @@ import (
 var rawStatements string
 
 func main() {
-	db, err := datalayer.NewStore(config.NewApp())
+	db, err := datalayer.NewForORM(config.NewApp())
 	if err != nil {
 		panic(err)
 	}
