@@ -11,7 +11,8 @@ import (
 )
 
 func NewForORM(config config.App) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=localhost user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Bogota",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Bogota",
+		config.Database.Host(),
 		config.Database.User(),
 		config.Database.Password(),
 		config.Database.Name(),

@@ -2,6 +2,10 @@ package config
 
 type Database struct{}
 
+func (d Database) Host() string {
+	return mustEnv("POSTGRES_HOST")
+}
+
 func (d Database) Port() string {
 	return mustEnv("POSTGRES_PORT")
 }
