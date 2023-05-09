@@ -13,13 +13,15 @@
 ### Required
 
 - `go >=1.20`
-- `just`
-- `docker`
-- `docker-compose`
+- [just](https://github.com/casey/just)
+- [docker](https://docs.docker.com/get-docker)
+- [docker-compose](https://docs.docker.com/compose/install)
+- [air](https://github.com/cosmtrek/air) (For development)
 
 ### Recommended
 
-- `golangci-lint`
+- [golangci-lint](https://golangci-lint.run/usage/install)
+- [panicparse](https://github.com/maruel/panicparse)
 
 ## How to run
 
