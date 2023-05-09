@@ -2,10 +2,6 @@ name: Go
 
 on: [push, pull_request]
 
-permissions:
-  # required for all workflows
-  security-events: write
-
 jobs:
   build:
     name: build
