@@ -11,3 +11,7 @@ linters:
   fast: true
   disable:
     - godox
+linters-settings:
+  funlen:
+    lines: 70
+    statements: 40
