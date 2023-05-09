@@ -20,3 +20,15 @@
 ### Recommended
 
 - `golangci-lint`
+
+## How to run
+
+Make sure you have correctly installed the tools from the previous section
+
+```bash
+# If first time
+$ just migrate
+
+# Start the server
+$ just start
+```
