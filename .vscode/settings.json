@@ -1,4 +1,7 @@
 {
     "cSpell.enabled": true,
-    "cSpell.words": ["anypwd", "anydb"]
+    "cSpell.words": ["anypwd", "anydb"],
+    "files.exclude": {
+        "_data": true
+    }
 }
