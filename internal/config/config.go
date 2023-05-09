@@ -15,11 +15,6 @@ type (
 	Server struct {
 		Port string `env:"PORT"`
 	}
-
-	Database struct {
-		Login    string `env:"DATABASE_LOGIN"`
-		Password string `env:"DATABASE_PASSWORD"`
-	}
 )
 
 func NewApp(configFilePath string) App {
