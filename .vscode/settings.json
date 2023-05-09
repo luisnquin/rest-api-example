@@ -1,6 +1,17 @@
 {
     "cSpell.enabled": true,
-    "cSpell.words": ["anypwd", "anydb"],
+    "cSpell.words": [
+        "anypwd",
+        "anydb",
+        "Hindhaugh",
+        "Trixi",
+        "Downie",
+        "Waples",
+        "Threadgould",
+        "Etherton",
+        "Rilston",
+        "Beringer"
+    ],
     "files.exclude": {
         "_data": true
     }
