@@ -3,7 +3,10 @@
 
 ## Requirements
 
-- For now none
+- REST API(don't use frameworks)
+- Use of GORM with PostgreSQL or MySQL
+- Deployed in AWS Lambda or AWS EC2
+- Must have a pagination endpoint with relationships.
 
 ## Tools
 
