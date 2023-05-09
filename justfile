@@ -1,6 +1,9 @@
 set dotenv-load
 set export
 
+dev:
+	air
+
 build:
 	@go build -o ./build/server ./cmd/server/
 
