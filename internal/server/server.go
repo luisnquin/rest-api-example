@@ -1,10 +1,13 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
+	"github.com/samber/lo"
 )
 
 type (
@@ -15,24 +18,24 @@ type (
 	}
 
 	handlerInfo struct {
-		handler    Handler
+		handler    HandlerFunc
 		method     string
 		path       string
 		withToken  bool
 		withApiKey bool
 	}
 
-	Handler func(w http.ResponseWriter, r *http.Request, p Params)
+	HandlerFunc func(w http.ResponseWriter, r *http.Request, p Params)
 )
 
 type Registerer interface {
-	RegisterHandler(path, method string, handler Handler, apiKey, token bool)
+	RegisterHandler(path, method string, handler HandlerFunc, apiKey, token bool)
 }
 
 type Params = httprouter.Params
 
-func New(config config.App) Server {
-	return Server{
+func New(config config.App) *Server {
+	return &Server{
 		pathMethods: make(map[string][]string),
 		config:      config,
 	}
@@ -49,4 +52,45 @@ func (s Server) Start() error {
 	}
 
 	return http.ListenAndServe(s.config.Server.Port(), router)
+}
+
+func (s *Server) RegisterHandler(path, method string, handler HandlerFunc, apiKey, token bool) {
+	s.validateHandlerRequest(path, method, handler)
+
+	s.pathMethods[path] = append(s.pathMethods[path], method)
+
+	s.handlers = append(s.handlers, handlerInfo{
+		handler:    handler,
+		withApiKey: apiKey,
+		method:     method,
+		withToken:  token,
+		path:       path,
+	})
+}
+
+func (s Server) validateHandlerRequest(path, method string, handler HandlerFunc) {
+	switch {
+	case path == "":
+		panic("no path provided")
+	case strings.ToLower(path) != path:
+		panic(fmt.Sprintf("path '%s' must be in lowercase", path))
+	case path[0] != '/':
+		panic(fmt.Sprintf("the path '%s' must start with a slash", path))
+	case !strings.Contains("abcdefghijklmnopqrstuvwxyz", string(path[len(path)-1])):
+		panic(fmt.Sprintf("the path '%s' must end with a valid letter", path))
+	}
+
+	validHttpMethods := []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodPut, http.MethodDelete}
+
+	if !lo.Contains(validHttpMethods, method) {
+		panic(fmt.Sprintf("http method '%s' not supported for path %s", method, path))
+	}
+
+	if handler == nil {
+		panic(fmt.Sprintf("http handler for path and method %s - %s is nil", path, method))
+	}
+
+	if lo.Contains(s.pathMethods[path], method) {
+		panic(fmt.Sprintf("http method '%s' with path '%s' already used", method, path))
+	}
 }
