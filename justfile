@@ -8,7 +8,7 @@ build:
 	@go build -o ./build/server ./cmd/server/
 
 run:
-	@./build/server
+	@if command -v pp &> /dev/null; then ./build/server 2>&1 | pp; else ./build/server; fi
 
 start: build run
 
