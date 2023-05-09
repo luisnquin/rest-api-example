@@ -4,11 +4,14 @@ services:
   db:
     image: postgres:15.2
     restart: always
-    environment:
-      POSTGRES_USER: any
-      POSTGRES_PASSWORD: anypwd
-      POSTGRES_DB: anydb
     ports:
       - 5432:5432
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file: ./.env
+    hostname: postgres
     volumes:
-      - /compose/db:/var/lib/postgresql/data
+      - ./data/postgres/pgdata:/var/lib/postgresql/data/pgdata
