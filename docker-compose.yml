@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:15.2
+    restart: always
+    environment:
+      POSTGRES_USER: any
+      POSTGRES_PASSWORD: anypwd
+      POSTGRES_DB: anydb
+    ports:
+      - 5432:5432
+    volumes:
+      - /compose/db:/var/lib/postgresql/data
