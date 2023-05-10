@@ -16,6 +16,7 @@
 
 - [golangci-lint](https://golangci-lint.run/usage/install)
 - [panicparse](https://github.com/maruel/panicparse)
+- [pg-ping](https://github.com/luisnquin/pg-ping)
 
 ## Get started
 
