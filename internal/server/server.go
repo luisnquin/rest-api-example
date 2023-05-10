@@ -7,6 +7,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
+	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
 	"github.com/samber/lo"
 )
 
@@ -48,8 +49,14 @@ func (s Server) Start() error {
 		// handler := LogMiddleware(endpoint.handler)
 		handler := endpoint.handler
 
+		log.Debug().Msgf("HTTP Route %s %s has been registered ", endpoint.method, endpoint.path)
+
 		router.Handle(endpoint.method, endpoint.path, httprouter.Handle(handler))
 	}
+
+	go func() {
+		log.Trace().Msgf("listening on port %s", s.config.Server.Port())
+	}()
 
 	return http.ListenAndServe(s.config.Server.Port(), router)
 }
