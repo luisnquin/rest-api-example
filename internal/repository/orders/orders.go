@@ -15,68 +15,28 @@ type Repository struct {
 
 func NewRepository(db *gorm.DB) Repository { return Repository{db: db} }
 
-// TODO: use JOIN instead
-
 func (r Repository) PaginatedSearch(page, limit int) ([]relations.DetailedOrder, error) {
 	offset := repository.CreateOffset(page, limit)
 
-	var orders []models.Order
+	var ordersWithCustomer []orderAndCustomer
 
-	err := r.db.Offset(offset).Limit(limit).Find(&orders).Error
+	err := r.db.Table("orders").Select("orders.order_id", "c.customer_id", "c.email",
+		"c.first_name", "c.last_name", "c.phone_number", "orders.created_at", "orders.updated_at").
+		Joins("LEFT JOIN customers AS c ON orders.customer_id = c.customer_id").
+		Offset(offset).Limit(limit).Find(&ordersWithCustomer).Error
 	if err != nil {
 		return nil, err
 	}
 
-	detailedOrders := make([]relations.DetailedOrder, len(orders))
+	detailedOrders := make([]relations.DetailedOrder, len(ordersWithCustomer))
 
-	for index, order := range orders {
-		var customer models.Customer
-
-		err := r.db.Table("customers").Where("customer_id = ?", order.CustomerID).First(&customer).Error
+	for i, oc := range ordersWithCustomer {
+		detailedOrder, err := r.getDetailedOrder(oc)
 		if err != nil {
 			return nil, err
 		}
 
-		var orderItems []models.OrderItem
-
-		err = r.db.Table("order_items").Where("order_id = ?", order.OrderID).Find(&orderItems).Error
-		if err != nil {
-			return nil, err
-		}
-
-		items := make([]relations.OrderItem, len(orderItems))
-
-		for index, item := range orderItems {
-			var product models.Product
-
-			err := r.db.Table("products").Where("product_id = ?", item.ProductID).First(&product).Error
-			if err != nil {
-				return nil, err
-			}
-
-			items[index] = relations.OrderItem{
-				ID: item.OrderItemID,
-				Product: relations.OrderProduct{
-					ID:    product.ProductID,
-					Name:  product.Name,
-					Price: product.Price,
-				},
-				Quantity: item.Quantity,
-			}
-		}
-
-		detailedOrders[index] = relations.DetailedOrder{
-			ID:    order.OrderID,
-			Items: items,
-			Customer: relations.OrderCustomer{
-				FirstName:   customer.FirstName,
-				LastName:    customer.LastName,
-				Email:       customer.Email,
-				PhoneNumber: customer.PhoneNumber,
-			},
-			CreatedAt: order.CreatedAt,
-			UpdatedAt: order.UpdatedAt,
-		}
+		detailedOrders[i] = detailedOrder
 	}
 
 	return detailedOrders, nil
@@ -85,38 +45,38 @@ func (r Repository) PaginatedSearch(page, limit int) ([]relations.DetailedOrder,
 func (r Repository) GetByID(orderId string) (relations.DetailedOrder, error) {
 	orderId = strings.TrimSpace(orderId)
 
-	var order models.Order
+	var orderAndCustomer orderAndCustomer
 
-	err := r.db.Table("orders").Where("order_id = ?", orderId).Find(&order).Error
+	err := r.db.Table("orders").Select("orders.order_id", "c.customer_id", "c.email",
+		"c.first_name", "c.last_name", "c.phone_number", "orders.created_at", "orders.updated_at").
+		Joins("LEFT JOIN customers AS c ON orders.customer_id = c.customer_id").
+		Where("orders.order_id = ?", orderId).First(&orderAndCustomer).Error
 	if err != nil {
 		return relations.DetailedOrder{}, err
 	}
 
-	var customer models.Customer
+	return r.getDetailedOrder(orderAndCustomer)
+}
 
-	err = r.db.Table("customers").Where("customer_id = ?", order.CustomerID).First(&customer).Error
-	if err != nil {
-		return relations.DetailedOrder{}, err
-	}
-
+func (r Repository) getDetailedOrder(oc orderAndCustomer) (relations.DetailedOrder, error) {
 	var orderItems []models.OrderItem
 
-	err = r.db.Table("order_items").Where("order_id = ?", order.OrderID).Find(&orderItems).Error
+	err := r.db.Where("order_items.order_id = ?", oc.OrderID).Find(&orderItems).Error
 	if err != nil {
 		return relations.DetailedOrder{}, err
 	}
 
 	items := make([]relations.OrderItem, len(orderItems))
 
-	for index, item := range orderItems {
+	for j, item := range orderItems {
 		var product models.Product
 
-		err := r.db.Table("products").Where("product_id = ?", item.ProductID).First(&product).Error
+		err = r.db.Where("products.product_id = ?", item.ProductID).First(&product).Error
 		if err != nil {
 			return relations.DetailedOrder{}, err
 		}
 
-		items[index] = relations.OrderItem{
+		items[j] = relations.OrderItem{
 			ID: item.OrderItemID,
 			Product: relations.OrderProduct{
 				ID:    product.ProductID,
@@ -127,18 +87,16 @@ func (r Repository) GetByID(orderId string) (relations.DetailedOrder, error) {
 		}
 	}
 
-	detailedOrder := relations.DetailedOrder{
-		ID:    order.OrderID,
+	return relations.DetailedOrder{
+		ID:    oc.OrderID,
 		Items: items,
 		Customer: relations.OrderCustomer{
-			FirstName:   customer.FirstName,
-			LastName:    customer.LastName,
-			Email:       customer.Email,
-			PhoneNumber: customer.PhoneNumber,
+			FirstName:   oc.FirstName,
+			LastName:    oc.LastName,
+			Email:       oc.Email,
+			PhoneNumber: oc.PhoneNumber,
 		},
-		CreatedAt: order.CreatedAt,
-		UpdatedAt: order.UpdatedAt,
-	}
-
-	return detailedOrder, nil
+		CreatedAt: oc.CreatedAt,
+		UpdatedAt: oc.UpdatedAt,
+	}, nil
 }
