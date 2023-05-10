@@ -47,7 +47,7 @@ func (s Server) Start() error {
 
 	for _, endpoint := range s.handlers {
 		// handler := LogMiddleware(endpoint.handler)
-		handler := endpoint.handler
+		handler := s.logIncomingRequestsMiddleware(endpoint.handler)
 
 		log.Debug().Msgf("HTTP Route %s %s has been registered ", endpoint.method, endpoint.path)
 
