@@ -20,14 +20,19 @@ func NewForORM(config config.App) (*gorm.DB, error) {
 
 	log.Trace().Msg("successfully connected...")
 
+	return db, nil
+}
+
+func MigrateUsingORM(db *gorm.DB) error {
 	log.Trace().Msg("ensuring database tables...")
 
-	err = db.AutoMigrate(&models.Customer{}, &models.Order{}, &models.OrderItem{}, &models.Product{})
-	if err != nil {
-		return nil, err
-	}
+	return db.AutoMigrate(&models.Customer{}, &models.Order{}, &models.OrderItem{}, &models.Product{})
+}
 
-	return db, nil
+func DropAllUsingORM(db *gorm.DB) error {
+	log.Trace().Msg("dropping all database tables...")
+
+	return db.Migrator().DropTable(&models.Customer{}, &models.Order{}, &models.OrderItem{}, &models.Product{})
 }
 
 func generateDsnFromConfig(config config.App) string {
