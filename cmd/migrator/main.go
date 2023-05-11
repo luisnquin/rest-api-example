@@ -6,10 +6,11 @@ import (
 
 	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
 	"github.com/luisnquin/blind-creator-rest-api-test/internal/datalayer"
+	"gorm.io/gorm"
 )
 
 //go:embed mock.sql
-var rawStatements string
+var mockStatements string
 
 func main() {
 	db, err := datalayer.NewForORM(config.NewApp())
@@ -17,9 +18,20 @@ func main() {
 		panic(err)
 	}
 
+	// I don't think that's necessary to handle
+	// returned errors here
+	datalayer.DropAllUsingORM(db)
+	datalayer.MigrateUsingORM(db)
+
+	if err := createMockData(db); err != nil {
+		panic(err)
+	}
+}
+
+func createMockData(db *gorm.DB) error {
 	var statements []string
 
-	for _, stmt := range strings.Split(rawStatements, ";") {
+	for _, stmt := range strings.Split(mockStatements, ";") {
 		if stmt != "" {
 			statements = append(statements, stmt+";")
 		}
@@ -27,7 +39,9 @@ func main() {
 
 	for _, statement := range statements {
 		if err := db.Exec(statement).Error; err != nil {
-			panic(err)
+			return err
 		}
 	}
+
+	return nil
 }
