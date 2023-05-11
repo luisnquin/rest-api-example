@@ -1,0 +1,12 @@
+[Unit]
+Description=Test server
+After=network.target
+
+[Service]
+User=ec2-user
+WorkingDirectory=/home/ec2-user/
+ExecStart=/bin/bash -c 'export $(xargs <.env) && sudo -E ./server'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

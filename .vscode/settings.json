@@ -15,5 +15,6 @@
     ],
     "files.exclude": {
         "_data": true
-    }
+    },
+    "shellcheck.exclude": ["SC2009"]
 }
