@@ -1,5 +1,10 @@
 package config
 
+import (
+	"os"
+	"strings"
+)
+
 type Database struct{}
 
 func (d Database) Host() string {
@@ -7,7 +12,7 @@ func (d Database) Host() string {
 }
 
 func (d Database) Port() string {
-	return mustEnv("POSTGRES_PORT")
+	return strings.TrimSpace(os.Getenv("POSTGRES_PORT"))
 }
 
 func (d Database) Name() string {
