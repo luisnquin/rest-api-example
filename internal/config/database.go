@@ -1,8 +1,15 @@
 package config
 
 import (
+	"context"
+	"encoding/json"
 	"os"
 	"strings"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
 )
 
 type Database struct{}
@@ -20,6 +27,35 @@ func (d Database) Name() string {
 }
 
 func (d Database) Password() string {
+	secretName, region := os.Getenv("AWS_SECRETS_POSTGRES"), os.Getenv("AWS_REGION")
+
+	if secretName != "" && region != "" {
+		config, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
+		if err != nil {
+			log.Fatal().Err(err).Msg("unable to load default configuration for region (while trying to get 'database secret')")
+		}
+
+		svc := secretsmanager.NewFromConfig(config)
+
+		input := &secretsmanager.GetSecretValueInput{
+			SecretId:     aws.String(secretName),
+			VersionStage: aws.String("AWSCURRENT"),
+		}
+
+		result, err := svc.GetSecretValue(context.TODO(), input)
+		if err != nil {
+			log.Fatal().Err(err).Msg("unable to get 'database secret'")
+		}
+
+		var secrets map[string]string
+
+		if err := json.Unmarshal([]byte(*result.SecretString), &secrets); err != nil {
+			log.Fatal().Err(err).Msg("cannot unmarshal secret using a map[string]string")
+		}
+
+		return secrets["POSTGRES_PASSWORD"]
+	}
+
 	return mustEnv("POSTGRES_PASSWORD")
 }
 
