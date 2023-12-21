@@ -18,7 +18,7 @@ func main() {
 		panic(err)
 	}
 
-	// I don't think that's necessary to handle
+	// I don't think that is necessary to handle
 	// returned errors here
 	datalayer.DropAllUsingORM(db)
 	datalayer.MigrateUsingORM(db)
