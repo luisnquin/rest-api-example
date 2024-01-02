@@ -42,7 +42,7 @@ func Response(w http.ResponseWriter, statusCode int, v any) {
 
 // Shortcut for bad request response.
 func SendNotFound(w http.ResponseWriter, message ...string) {
-	responseShortcut(w, http.StatusBadRequest, "Not Found", message...)
+	responseShortcut(w, http.StatusNotFound, "Not Found", message...)
 }
 
 // Shortcut for internal server error response.
