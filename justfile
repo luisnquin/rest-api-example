@@ -16,7 +16,7 @@ run:
 start: build run
 
 compose-up:
-	docker-compose up -d
+	docker compose up -d
 
 migrate: erase-db-data compose-up build-migrator
 	bash ./scripts/database-wait.bash
