@@ -2,7 +2,7 @@ set dotenv-load
 set export
 
 dev:
-	air
+	@HOT_RELOAD=true ./scripts/run-server.sh
 
 build:
 	@go build -o ./build/server ./cmd/server/

@@ -34,7 +34,12 @@ main() {
         echo
     fi
 
-    just build && just run
+    if [ "$HOT_RELOAD" = "true" ]; then
+        air
+    else
+        just build && just run
+    fi
+
 }
 
-exit "$(main "$@")"
+main "$@"
