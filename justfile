@@ -13,7 +13,8 @@ build-migrator:
 run:
 	@if command -v pp &> /dev/null; then ./build/server 2>&1 | pp; else ./build/server; fi
 
-start: build run
+start:
+	@./scripts/run-server.sh
 
 compose-up:
 	@docker compose -p server-example up -d
