@@ -13,7 +13,7 @@ import (
 var mockStatements string
 
 func main() {
-	db, err := datalayer.NewForORM(config.NewApp())
+	db, err := datalayer.Connect(config.NewApp())
 	if err != nil {
 		panic(err)
 	}

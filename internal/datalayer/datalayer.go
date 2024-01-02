@@ -2,6 +2,7 @@ package datalayer
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/luisnquin/server-example/internal/config"
 	"github.com/luisnquin/server-example/internal/log"
@@ -10,22 +11,38 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewForORM(config config.App) (*gorm.DB, error) {
+// Creates a new connection (via ORM) using the provided database parameters that were specified in the configuration.
+func Connect(config config.App) (*gorm.DB, error) {
 	log.Trace().Msg("connecting to database...")
 
 	dsn := generateDsnFromConfig(config)
 	dialect := postgres.Open(dsn)
 
-	db, err := gorm.Open(dialect)
-	if err != nil {
-		if getSQLErrorCode(err) == cannot_connect_now_code {
-			return NewForORM(config)
-		}
+	retryInterval := time.Second * 2
+	maxRetries := uint8(5)
 
+	db, err := connectORM(dialect, maxRetries, 0, retryInterval)
+	if err != nil {
 		return nil, err
 	}
 
 	log.Trace().Msg("successfully connected...")
+
+	return db, nil
+}
+
+func connectORM(dialect gorm.Dialector, maxRetries, attempts uint8, retryInterval time.Duration) (*gorm.DB, error) {
+	db, err := gorm.Open(dialect)
+	if err != nil {
+		if getSQLErrorCode(err) == cannot_connect_now_code && attempts < maxRetries {
+			log.Info().Msgf("database is not reachable yet, retrying in %s seconds...", retryInterval)
+			time.Sleep(retryInterval)
+
+			return connectORM(dialect, maxRetries, attempts+1, retryInterval+time.Second*5)
+		}
+
+		return nil, err
+	}
 
 	return db, nil
 }

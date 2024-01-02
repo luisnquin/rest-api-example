@@ -13,7 +13,7 @@ func main() {
 
 	server := server.New(appConfig)
 
-	db, err := datalayer.NewForORM(appConfig)
+	db, err := datalayer.Connect(appConfig)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to create connection with db")
 	}
