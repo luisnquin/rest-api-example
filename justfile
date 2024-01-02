@@ -16,7 +16,10 @@ run:
 start: build run
 
 compose-up:
-	docker compose up -d
+	docker compose -p server-example up -d
+
+compose-down:
+	docker compose -p server-example down
 
 migrate: erase-db-data compose-up build-migrator
 	bash ./scripts/database-wait.bash
