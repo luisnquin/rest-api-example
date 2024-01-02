@@ -5,7 +5,7 @@ WORKDIR /app/
 COPY ./ /tmp/app/
 
 RUN apk add just
-RUN (cd /tmp/app/; just build && cp ./build/server /app/server) && rm -rf /tmp/app
+RUN (cd /tmp/app/; just build && cp ./build/server-example /app/server) && rm -rf /tmp/app
 RUN apk del just
 
 EXPOSE 8088

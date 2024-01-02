@@ -1,20 +1,23 @@
 set dotenv-load
 set export
 
-dev:
+dev: kill
 	@HOT_RELOAD=true ./scripts/run-server.sh
 
 build:
-	@go build -o ./build/server ./cmd/server/
+	@go build -o ./build/server-example ./cmd/server/
 
 build-migrator:
 	@go build -o ./build/migrator ./cmd/migrator/
 
 run:
-	@if command -v pp &> /dev/null; then ./build/server 2>&1 | pp; else ./build/server; fi
+	@if command -v pp &> /dev/null; then ./build/server-example 2>&1 | pp; else ./build/server-example; fi
 
 start:
 	@./scripts/run-server.sh
+
+kill:
+	@SERVER_NAME="server-example" ./scripts/kill-server.sh
 
 compose-up:
 	@docker compose -p server-example -f ./docker/docker-compose.yml up -d
