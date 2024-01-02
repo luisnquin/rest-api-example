@@ -10,6 +10,7 @@ linters:
   fast: true
   disable:
     - godox
+    - snakecase
 linters-settings:
   funlen:
     lines: 70
