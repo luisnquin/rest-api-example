@@ -14,3 +14,15 @@ linters-settings:
   funlen:
     lines: 70
     statements: 40
+  depguard:
+    rules:
+      main:
+        files:
+          - "$all"
+          - "!$test"
+        allow:
+          - $gostd # standard library
+          - github.com
+        deny:
+          - pkg: reflect
+            desc: Please don't use this
