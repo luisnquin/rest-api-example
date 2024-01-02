@@ -13,8 +13,15 @@ import (
 func NewForORM(config config.App) (*gorm.DB, error) {
 	log.Trace().Msg("connecting to database...")
 
-	db, err := gorm.Open(postgres.Open(generateDsnFromConfig(config)))
+	dsn := generateDsnFromConfig(config)
+	dialect := postgres.Open(dsn)
+
+	db, err := gorm.Open(dialect)
 	if err != nil {
+		if getSQLErrorCode(err) == cannot_connect_now_code {
+			return NewForORM(config)
+		}
+
 		return nil, err
 	}
 
