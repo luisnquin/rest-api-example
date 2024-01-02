@@ -27,13 +27,14 @@ func init() {
 		return file + ":" + strconv.Itoa(line)
 	}
 
-	zerolog.TimeFieldFormat = "2006-01-02 15:04:05"
-	zerolog.CallerFieldName = "from"
+	zerolog.TimeFieldFormat = "01-02 15:04:05"
+	zerolog.CallerFieldName = "loc"
 	zerolog.LevelFieldName = "lvl"
 	zerolog.TimestampFieldName = "at"
+	zerolog.MessageFieldName = "msg"
 
 	logger = zerolog.New(os.Stderr).
-		Level(zerolog.TraceLevel).With().Caller().Timestamp().Logger()
+		Level(zerolog.TraceLevel).With().Timestamp().Caller().Logger()
 }
 
 // Err starts a new message with error level with err as a field if not nil or
