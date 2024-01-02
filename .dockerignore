@@ -1,7 +1,0 @@
-.env.example
-.golangci.yaml
-.air.toml
-build/
-.vscode/
-.github/
-_data/

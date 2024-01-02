@@ -17,10 +17,10 @@ start:
 	@./scripts/run-server.sh
 
 compose-up:
-	@docker compose -p server-example up -d
+	@docker compose -p server-example -f ./docker/docker-compose.yml up -d
 
 compose-down:
-	@docker compose -p server-example down
+	@docker compose -p server-example -f ./docker/docker-compose.yml down
 
 migrate: erase-db-data compose-up build-migrator
 	bash ./scripts/database-wait.bash
