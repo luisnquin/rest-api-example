@@ -3,9 +3,9 @@ package orders
 import (
 	"strings"
 
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/models"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/models/relations"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/repository"
+	"github.com/luisnquin/server-example/internal/models"
+	"github.com/luisnquin/server-example/internal/models/relations"
+	"github.com/luisnquin/server-example/internal/repository"
 	"gorm.io/gorm"
 )
 

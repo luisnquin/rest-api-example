@@ -4,8 +4,8 @@ import (
 	_ "embed"
 	"strings"
 
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/datalayer"
+	"github.com/luisnquin/server-example/internal/config"
+	"github.com/luisnquin/server-example/internal/datalayer"
 	"gorm.io/gorm"
 )
 

@@ -3,8 +3,8 @@ package business
 import (
 	"net/http"
 
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/repository/orders"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/server"
+	"github.com/luisnquin/server-example/internal/repository/orders"
+	"github.com/luisnquin/server-example/internal/server"
 	"gorm.io/gorm"
 )
 

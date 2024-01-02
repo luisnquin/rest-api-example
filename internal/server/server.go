@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
+	"github.com/luisnquin/server-example/internal/config"
+	"github.com/luisnquin/server-example/internal/log"
 	"github.com/samber/lo"
 )
 

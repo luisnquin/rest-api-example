@@ -1,5 +1,5 @@
 
-# Blind creator REST API test
+# Server example
 
 ## Tools
 
@@ -24,8 +24,8 @@
 - Clone the project repository and stay in the root directory
 
     ```bash
-    git clone https://github.com/luisnquin/blind-creator-rest-api-test.git /tmp/blind-creator-rest-api-test
-    cd /tmp/blind-creator-rest-api-test
+    git clone https://github.com/luisnquin/server-example.git /tmp/luisnquin-server-example
+    cd /tmp/luisnquin-server-example
     ```
 
 - Copy the `.env.example` file and rename it to `.env`, otherwise you'll not be

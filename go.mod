@@ -1,4 +1,4 @@
-module github.com/luisnquin/blind-creator-rest-api-test
+module github.com/luisnquin/server-example
 
 go 1.20
 

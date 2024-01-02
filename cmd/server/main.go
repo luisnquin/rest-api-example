@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/business"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/datalayer"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/server"
+	"github.com/luisnquin/server-example/internal/business"
+	"github.com/luisnquin/server-example/internal/config"
+	"github.com/luisnquin/server-example/internal/datalayer"
+	"github.com/luisnquin/server-example/internal/log"
+	"github.com/luisnquin/server-example/internal/server"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
+	"github.com/luisnquin/server-example/internal/log"
 )
 
 func (s Server) logIncomingRequestsMiddleware(next HandlerFunc) HandlerFunc {

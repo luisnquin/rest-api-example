@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/api"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/server"
+	"github.com/luisnquin/server-example/internal/api"
+	"github.com/luisnquin/server-example/internal/log"
+	"github.com/luisnquin/server-example/internal/server"
 	"gorm.io/gorm"
 )
 

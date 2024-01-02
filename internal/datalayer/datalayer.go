@@ -3,9 +3,9 @@ package datalayer
 import (
 	"fmt"
 
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/config"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/log"
-	"github.com/luisnquin/blind-creator-rest-api-test/internal/models"
+	"github.com/luisnquin/server-example/internal/config"
+	"github.com/luisnquin/server-example/internal/log"
+	"github.com/luisnquin/server-example/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

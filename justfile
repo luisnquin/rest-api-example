@@ -38,4 +38,4 @@ erase-db-data:
 	if test -d "./_data"; then sudo rm -rf ./_data/; fi
 
 build-image:
-	docker build . -t blind-creator-rest-api-test:latest
+	docker build . -t luisnquin-server-example:latest
