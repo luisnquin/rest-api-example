@@ -11,7 +11,9 @@
         "Etherton",
         "Rilston",
         "AWSCURRENT",
-        "Beringer"
+        "Beringer",
+        "pgxpool",
+        "jackc"
     ],
     "files.exclude": {
         "_data": true
