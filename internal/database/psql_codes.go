@@ -1,4 +1,4 @@
-package datalayer
+package database
 
 import (
 	"errors"

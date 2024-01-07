@@ -17,7 +17,7 @@ main() {
 
     last_compose_up_ts_file_path="/tmp/$PROJECT_NAME-compose-up.txt"
 
-    last_compose_up_dt=$(cat /tmp/$PROJECT_NAME-compose-up.txt 2>/dev/null)
+    last_compose_up_dt=$(cat /tmp/$PROJECT_NAME-compose-up.txt 2>/dev/null || echo 0)
     env_file_modification_dt=$(date -r .env +%s%N | cut -b1-13)
 
     set -e

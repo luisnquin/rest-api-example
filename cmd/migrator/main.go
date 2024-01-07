@@ -1,47 +1,47 @@
 package main
 
-import (
-	_ "embed"
-	"strings"
+// import (
+// 	_ "embed"
+// 	"strings"
 
-	"github.com/luisnquin/server-example/internal/config"
-	"github.com/luisnquin/server-example/internal/datalayer"
-	"gorm.io/gorm"
-)
+// 	"github.com/luisnquin/server-example/internal/config"
+// 	"github.com/luisnquin/server-example/internal/datalayer"
+// 	"gorm.io/gorm"
+// )
 
-//go:embed mock.sql
-var mockStatements string
+// //go:embed mock.sql
+// var mockStatements string
 
-func main() {
-	db, err := datalayer.Connect(config.NewApp())
-	if err != nil {
-		panic(err)
-	}
+// func main() {
+// 	db, err := datalayer.Connect(config.NewApp())
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	// I don't think that is necessary to handle
-	// returned errors here
-	datalayer.DropAllUsingORM(db)
-	datalayer.MigrateUsingORM(db)
+// 	// I don't think that is necessary to handle
+// 	// returned errors here
+// 	// datalayer.DropAllUsingORM(db)
+// 	// datalayer.MigrateUsingORM(db)
 
-	if err := createMockData(db); err != nil {
-		panic(err)
-	}
-}
+// 	if err := createMockData(db); err != nil {
+// 		panic(err)
+// 	}
+// }
 
-func createMockData(db *gorm.DB) error {
-	var statements []string
+// func createMockData(db *gorm.DB) error {
+// 	var statements []string
 
-	for _, stmt := range strings.Split(mockStatements, ";") {
-		if stmt != "" {
-			statements = append(statements, stmt+";")
-		}
-	}
+// 	for _, stmt := range strings.Split(mockStatements, ";") {
+// 		if stmt != "" {
+// 			statements = append(statements, stmt+";")
+// 		}
+// 	}
 
-	for _, statement := range statements {
-		if err := db.Exec(statement).Error; err != nil {
-			return err
-		}
-	}
+// 	for _, statement := range statements {
+// 		if err := db.Exec(statement).Error; err != nil {
+// 			return err
+// 		}
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
