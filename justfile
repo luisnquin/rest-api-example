@@ -1,7 +1,7 @@
 set dotenv-load
 set export
 
-dev: kill
+dev: kill sqlc
 	@HOT_RELOAD=true ./scripts/run-server.sh
 
 build:
@@ -13,7 +13,7 @@ build-migrator:
 run:
 	@if command -v pp &> /dev/null; then ./build/server-example 2>&1 | pp; else ./build/server-example; fi
 
-start:
+start: sqlc
 	@./scripts/run-server.sh
 
 kill:
@@ -21,6 +21,9 @@ kill:
 
 compose-up:
 	@docker compose -p server-example -f ./docker/docker-compose.yml up -d
+
+sqlc:
+	@sqlc generate
 
 compose-down:
 	@docker compose -p server-example -f ./docker/docker-compose.yml down
