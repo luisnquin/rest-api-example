@@ -1,4 +1,3 @@
-
 envs:
   - name: dev
     variables:
