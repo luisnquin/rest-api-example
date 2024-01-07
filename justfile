@@ -11,7 +11,7 @@ build-migrator:
 	@go build -o ./build/migrator ./cmd/migrator/
 
 run:
-	@if command -v pp &> /dev/null; then ./build/server-example 2>&1 | pp; else ./build/server-example; fi
+	@if command -v panicparse &> /dev/null; then ./build/server-example 2>&1 | panicparse; else ./build/server-example; fi
 
 start: sqlc
 	@./scripts/run-server.sh
