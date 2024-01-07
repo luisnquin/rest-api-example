@@ -18,7 +18,6 @@ func (m Manager) GetCitiesHandler() server.HandlerFunc {
 			err    error
 		)
 
-
 		if params.CountryCode != "" {
 			cities, err = m.querier.GetCitiesByCountry(r.Context(), sqlc.GetCitiesByCountryParams{
 				CountryCode: params.CountryCode,
