@@ -12,6 +12,10 @@ import (
 )
 
 func main() {
+	if err := showDebugInfo(); err != nil {
+		panic(err)
+	}
+
 	appConfig := config.NewApp()
 
 	server := server.New(appConfig)
