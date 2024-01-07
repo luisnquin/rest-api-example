@@ -3,33 +3,43 @@ package database
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/luisnquin/server-example/internal/config"
 	"github.com/luisnquin/server-example/internal/log"
 )
 
-// Creates a new connection using the provided database parameters that were specified in the configuration.
+type retryParams struct {
+	Retries    int8
+	MaxRetries int8
+	Interval   time.Duration
+}
+
+func defaultRetryParams() retryParams {
+	return retryParams{
+		Interval:   time.Second * 2,
+		Retries:    0,
+		MaxRetries: 5,
+	}
+}
+
+func (c retryParams) next() retryParams {
+	c.Retries++
+	c.Interval += time.Second * 5
+
+	return c
+}
+
+// Creates a new pool connection using the provided database parameters that were specified in the configuration.
 func NewConnectionPool(ctx context.Context, config config.App) (*pgxpool.Pool, error) {
 	log.Trace().Msg("connecting to database...")
 
-	// retryInterval := time.Second * 2
-	// maxRetries := uint8(5)
-
-	// db, err := connectORM(dialect, maxRetries, 0, retryInterval)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	dsn := generateDsnFromConfig(config)
 
-	pool, err := pgxpool.New(ctx, dsn)
+	pool, err := newConnectionPool(ctx, dsn, defaultRetryParams())
 	if err != nil {
 		return nil, err
-	}
-
-	if err := pool.Ping(ctx); err != nil {
-		return nil, fmt.Errorf("unable to ping db connection: %w", err)
 	}
 
 	log.Trace().Msg("successfully connected...")
@@ -37,26 +47,22 @@ func NewConnectionPool(ctx context.Context, config config.App) (*pgxpool.Pool, e
 	return pool, nil
 }
 
-func generateDsnFromConfig(config config.App) string {
-	var sslMode string
-
-	if config.IsProduction() {
-		sslMode = "require"
-	} else {
-		sslMode = "disable"
+func newConnectionPool(ctx context.Context, dsn string, rp retryParams) (*pgxpool.Pool, error) {
+	pool, err := pgxpool.New(ctx, dsn)
+	if err != nil {
+		return nil, err
 	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=%s",
-		config.Database.Host(),
-		config.Database.User(),
-		config.Database.Password(),
-		config.Database.Name(),
-		sslMode,
-	)
+	if err := pool.Ping(ctx); err != nil {
+		if getSQLErrorCode(err) == cannot_connect_now_code && rp.Retries < rp.MaxRetries {
+			log.Warn().Msgf("we tried to connect to database too early, retrying in %s...", rp.Interval)
+			time.Sleep(rp.Interval)
 
-	if port := config.Database.Port(); port != "" {
-		dsn += fmt.Sprintf(" port=%s", port)
+			return newConnectionPool(ctx, dsn, rp.next())
+		}
+
+		return nil, fmt.Errorf("unable to ping db connection: %w", err)
 	}
 
-	return dsn
+	return pool, nil
 }
