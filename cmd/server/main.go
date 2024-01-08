@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"os"
 	"runtime"
 	"runtime/debug"
 
+	"github.com/gookit/color"
 	"github.com/luisnquin/server-example/internal/business/locations"
 	"github.com/luisnquin/server-example/internal/config"
 	"github.com/luisnquin/server-example/internal/database"
@@ -14,13 +16,10 @@ import (
 )
 
 func main() {
-
-	appConfig := config.NewApp()
-
-	server := server.New(appConfig)
 	showDebugInfo()
 
 	ctx := context.Background()
+	appConfig := config.NewApp()
 
 	pool, err := database.NewConnectionPool(ctx, appConfig)
 	if err != nil {
@@ -31,9 +30,18 @@ func main() {
 
 	querier := sqlc.New(pool)
 
-	locations.NewManager(querier).RegisterHandlers(server)
+	server := server.New(appConfig)
+	server.RegisterBatch(
+		locations.NewManager(querier),
+	)
 
-	if err := server.Start(); err != nil {
+	server.OnBeforeStart = func() {
+		port := appConfig.Server.Port()
+		log.Trace().Msgf("listening on port %s", port)
+		log.Trace().Msgf("%s curl -sH GET http://localhost%s", color.HEX("#46e0de").Sprint("try:"), port)
+	}
+
+	if err = server.Start(); err != nil {
 		log.Fatal().Err(err).Msg("while the server was running...")
 	}
 }
