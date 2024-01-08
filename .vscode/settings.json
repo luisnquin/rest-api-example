@@ -13,7 +13,8 @@
         "AWSCURRENT",
         "Beringer",
         "pgxpool",
-        "jackc"
+        "jackc",
+        "sqlc"
     ],
     "files.exclude": {
         "_data": true
