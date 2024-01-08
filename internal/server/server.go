@@ -13,9 +13,10 @@ import (
 
 type (
 	Server struct {
-		pathMethods map[string][]string
-		config      config.App
-		handlers    []handlerInfo
+		OnBeforeStart func()
+		pathMethods   map[string][]string
+		config        config.App
+		handlers      []handlerInfo
 	}
 
 	handlerInfo struct {
@@ -31,6 +32,10 @@ type (
 
 type Registerer interface {
 	RegisterHandler(path, method string, handler HandlerFunc, apiKey, token bool)
+}
+
+type registerer interface {
+	RegisterHandlers(srv Registerer)
 }
 
 type Params = httprouter.Params
@@ -54,11 +59,15 @@ func (s Server) Start() error {
 		router.Handle(endpoint.method, endpoint.path, httprouter.Handle(handler))
 	}
 
-	go func() {
-		log.Trace().Msgf("listening on port %s", s.config.Server.Port())
-	}()
+	if s.OnBeforeStart != nil {
+		go s.OnBeforeStart()
+	}
 
 	return http.ListenAndServe(s.config.Server.Port(), router)
+}
+
+func (s *Server) RegisterBatch(rs ...registerer) {
+	lo.ForEach(rs, func(r registerer, _ int) { r.RegisterHandlers(s) })
 }
 
 func (s *Server) RegisterHandler(path, method string, handler HandlerFunc, apiKey, token bool) {

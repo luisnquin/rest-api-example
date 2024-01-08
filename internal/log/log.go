@@ -27,13 +27,15 @@ func init() {
 		return file + ":" + strconv.Itoa(line)
 	}
 
-	zerolog.TimeFieldFormat = "01-02 15:04:05"
+	desiredTimeFormat := "01-02 15:04:05"
+
+	zerolog.TimeFieldFormat = desiredTimeFormat
 	zerolog.CallerFieldName = "loc"
 	zerolog.LevelFieldName = "lvl"
 	zerolog.TimestampFieldName = "at"
 	zerolog.MessageFieldName = "msg"
 
-	logger = zerolog.New(os.Stderr).
+	logger = zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: desiredTimeFormat}).
 		Level(zerolog.TraceLevel).With().Timestamp().Caller().Logger()
 }
 
