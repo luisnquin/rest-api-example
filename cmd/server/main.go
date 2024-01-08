@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"runtime"
+	"runtime/debug"
 
 	"github.com/luisnquin/server-example/internal/business/locations"
 	"github.com/luisnquin/server-example/internal/config"
@@ -12,13 +14,11 @@ import (
 )
 
 func main() {
-	if err := showDebugInfo(); err != nil {
-		panic(err)
-	}
 
 	appConfig := config.NewApp()
 
 	server := server.New(appConfig)
+	showDebugInfo()
 
 	ctx := context.Background()
 
@@ -36,4 +36,11 @@ func main() {
 	if err := server.Start(); err != nil {
 		log.Fatal().Err(err).Msg("while the server was running...")
 	}
+}
+
+func showDebugInfo() {
+	buildInfo, _ := debug.ReadBuildInfo()
+
+	log.Trace().Str("go_version", buildInfo.GoVersion).Str("GOOS", runtime.GOOS).Str("GOARCH", runtime.GOARCH).
+		Int("cpu_count", runtime.NumCPU()).Int("pid", os.Getpid()).Send()
 }
