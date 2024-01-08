@@ -6,38 +6,35 @@
   };
 
   outputs = inputs:
-    with inputs; let
-      system = "x86_64-linux";
-
-      pkgs = import nixpkgs {
-        config = {
-          allowBroken = false;
-          allowUnfree = true;
-        };
-        inherit system;
-      };
-    in
+    with inputs;
       flake-utils.lib.eachDefaultSystem (
         system: {
           defaultPackage = pkgs.hello;
 
           devShells.default = let
-            otherPkgs = [senv.defaultPackage.${system}];
+            pkgs = import nixpkgs {
+              config = {
+                allowBroken = false;
+                allowUnfree = true;
+              };
+              inherit system;
+            };
           in
             pkgs.mkShell {
-              buildInputs = with pkgs;
-                [
-                  golangci-lint
-                  panicparse
-                  go_1_21
-                  hadolint
-                  gofumpt
-                  just
-                  sqlc
-                  git
-                  air
-                ]
-                ++ otherPkgs;
+              inherit system;
+
+              buildInputs = [
+                senv.defaultPackage.${system}
+                pkgs.golangci-lint
+                pkgs.panicparse
+                pkgs.go_1_21
+                pkgs.hadolint
+                pkgs.gofumpt
+                pkgs.just
+                pkgs.sqlc
+                pkgs.git
+                pkgs.air
+              ];
             };
         }
       );
