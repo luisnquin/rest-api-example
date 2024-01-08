@@ -3,3 +3,4 @@ build/*
 .env
 _data/
 .env.production
+**/.direnv
